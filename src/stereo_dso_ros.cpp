@@ -82,24 +82,10 @@ void settingsDefault(int preset) {
     setting_maxOptIterations = 6;
     setting_minOptIterations = 1;
 
-    /*林辉灿注释掉
-    setting_kfGlobalWeight=0.3;   // original is 1.0. 0.3 is a balance between speed and accuracy. if tracking lost, set
-    this para higher setting_maxShiftWeightT= 0.04f * (640 + 128);   // original is 0.04f * (640+480); this para is
-    depend on the crop size. setting_maxShiftWeightR= 0.04f * (640 + 128);   // original is 0.0f * (640+480);
-    setting_maxShiftWeightRT= 0.02f * (640 + 128);  // original is 0.02f * (640+480);
-    */
-    /*林辉灿重设参数 KITTI*
-    setting_kfGlobalWeight=1.0;   // original is 1.0. 0.3 is a balance between speed and accuracy. if tracking lost, set
-    this para higher setting_maxShiftWeightT= 0.04f * (960 + 320);   // original is 0.04f * (640+480); this para is
-    depend on the crop size. setting_maxShiftWeightR= 0.04f * (960 + 320);    // original is 0.0f * (640+480);
-    setting_maxShiftWeightRT= 0.02f * (960 + 320);  // original is 0.02f * (640+480);
-    /*林辉灿重设参数  EuRoC*/
-    setting_kfGlobalWeight =
-        0.3f;  // original is 1.0. 0.3 is a balance between speed and accuracy. if tracking lost, set this para higher
-    setting_maxShiftWeightT =
-        0.04f * (640 + 360);  // original is 0.04f * (640+480); this para is depend on the crop size.
-    setting_maxShiftWeightR = 0.04f * (640 + 360);   // original is 0.0f * (640+480);
-    setting_maxShiftWeightRT = 0.02f * (640 + 360);  // original is 0.02f * (640+480);*/
+    setting_kfGlobalWeight = 0.3f;
+    setting_maxShiftWeightT = 0.04f * (640 + 360);
+    setting_maxShiftWeightR = 0.04f * (640 + 360);
+    setting_maxShiftWeightRT = 0.02f * (640 + 360);
 
     setting_logStuff = false;
   } else if (preset == 2 || preset == 3) {
@@ -358,48 +344,6 @@ void callback(const sensor_msgs::ImageConstPtr &img, const sensor_msgs::ImageCon
   }
 }
 
-/* std::function<void(const sensor_msgs::ImageConstPtr &img,
-                    const sensor_msgs::ImageConstPtr &img_right)>
-         callback = [](const sensor_msgs::ImageConstPtr &img,
-                       const sensor_msgs::ImageConstPtr &img_right)
-{
-     double stamp = convertStamp(img->header.stamp);
-
-     cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(img, sensor_msgs::image_encodings::MONO8);
-     assert(cv_ptr->image.type() == CV_8U);
-     assert(cv_ptr->image.channels() == 1);
-
-     cv_bridge::CvImagePtr cv_ptr_right = cv_bridge::toCvCopy(img_right, sensor_msgs::image_encodings::MONO8);
-     assert(cv_ptr_right->image.type() == CV_8U);
-     assert(cv_ptr_right->image.channels() == 1);
-
-
-     if (setting_fullResetRequested)
-     {
-         std::vector<IOWrap::Output3DWrapper *> wraps = fullSystem->outputWrapper;
-         delete fullSystem;
-         for (IOWrap::Output3DWrapper *ow: wraps) ow->reset();
-         fullSystem = new FullSystem();
-         fullSystem->linearizeOperation = false;
-         fullSystem->outputWrapper = wraps;
-         if (undistorter->photometricUndist != 0)
-             fullSystem->setGammaFunction(undistorter->photometricUndist->getG());
-         setting_fullResetRequested = false;
-     }
-
-     MinimalImageB minImg((int) cv_ptr->image.cols, (int) cv_ptr->image.rows, (unsigned char *) cv_ptr->image.data);
-     MinimalImageB minImg_right((int) cv_ptr_right->image.cols, (int) cv_ptr_right->image.rows,
-                                (unsigned char *) cv_ptr_right->image.data);
-     ImageAndExposure *undistImg = undistorter->undistort<unsigned char>(&minImg, 1, stamp, 1.0f);
-     ImageAndExposure *undistImg_right = undistorter->undistort<unsigned char>(&minImg_right, 1, stamp, 1.0f);
-
-     fullSystem->addActiveFrame(undistImg, undistImg_right, frameID);
-     frameID++;
-     //printf("frameID: %d\n", frameID);
-     delete undistImg;
-     delete undistImg_right;
- };*/
-
 int main(int argc, char **argv) {
   ros::init(argc, argv, "stereo_dso_ros");
   ros::NodeHandle nh;
@@ -427,23 +371,12 @@ int main(int argc, char **argv) {
 
   if (useSampleOutput) fullSystem->outputWrapper.push_back(new IOWrap::SampleOutputWrapper());
 
-  // TODO: check if we need it
-  /*dso::FrameSkippingStrategy frameSkipping(frameSkippingSettings);
-  // frameSkipping registers as an outputWrapper to get notified of changes of the system status.
-  fullSystem->outputWrapper.push_back(&frameSkipping);*/
-
-  // TODO: check if we need a separate thread
-  //    boost::thread runThread = boost::thread(boost::bind(run, viewer.get()));
-
-  message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/cam0/image_raw", 1);   // "/camera/left/image_raw"
-  message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/cam1/image_raw", 1);  // "/camera/right/image_raw"
+  message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/cam0/image_raw", 1);
+  message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/cam1/image_raw", 1);
   typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> sync_pol;
   message_filters::Synchronizer<sync_pol> sync(sync_pol(10), left_sub, right_sub);
-  //    sync.registerCallback(&callback);
   sync.registerCallback(boost::bind(&callback, _1, _2));
 
-  // TODO: make it work with Pangolin (doesn't work if we use ros output wrapper)
-  // This will handle publishing to ROS topics.
   rosOutput = new ROSOutputWrapper();
   fullSystem->outputWrapper.push_back(rosOutput);
 

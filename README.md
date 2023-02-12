@@ -1,7 +1,6 @@
 ﻿# SDSO: Stereo Direct Sparse Odometry 
 
----
-Stereo DSO package, which supports ROS interface. Mostly designed for mapping purposes upon [DSO](https://github.com/JakobEngel/dso)
+Stereo Direct Sparse Odometry package, which supports ROS interface. Mostly designed for mapping purposes upon [DSO](https://github.com/JakobEngel/dso)
 and [Stereo DSO](https://github.com/JiatianWu/stereo-dso) libraries.
 
 ### **Related Papers:** 

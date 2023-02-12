@@ -8,6 +8,8 @@ and [Stereo DSO](https://github.com/JiatianWu/stereo-dso) libraries.
 * **Direct Sparse Odometry**, *J. Engel, V. Koltun, D. Cremers*, In arXiv:1607.02565, 2016
 * **Large-scale direct SLAM with stereo cameras**, *J. Engel, J. Stückler, D. Cremers*, IROS, 2015
 ### Installation
+The package requires pre-installed libraries that are the same as for [Stereo DSO](https://github.com/JiatianWu/stereo-dso).
+Also, PCL library is required for use of ROS interface.
 
 ```
 mkdir ~/stereo_dso_ws/src

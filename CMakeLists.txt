@@ -57,6 +57,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/OptimizationBackend
         ${PROJECT_SOURCE_DIR}/src/util
         ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
+        ${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
         ${EIGEN3_INCLUDE_DIR}
 )
 

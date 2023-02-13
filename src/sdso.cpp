@@ -63,6 +63,7 @@ void SDSO::parseSettings() {
   ros::param::get("setting_maxShiftWeightT", setting_maxShiftWeightT);
   ros::param::get("setting_maxShiftWeightR", setting_maxShiftWeightR);
   ros::param::get("setting_maxShiftWeightRT", setting_maxShiftWeightRT);
+  ros::param::get("setting_minGradHistAdd", setting_minGradHistAdd);
   ros::param::get("setting_logStuff", setting_logStuff);
 
   switch (mode) {

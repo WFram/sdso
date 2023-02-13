@@ -131,10 +131,11 @@ if (BUILD_WITH_ROS)
     )
     include_directories(
             ${PROJECT_SOURCE_DIR}/src/ROSWrapper
+            ${PROJECT_SOURCE_DIR}/src/sdso.h
             ${PCL_INCLUDE_DIRS}
             ${catkin_INCLUDE_DIRS}
     )
-    add_executable(sdso_ros src/stereo_dso_ros.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
+    add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
     target_link_libraries(sdso_ros
             sdso
             ${Pangolin_LIBRARIES}

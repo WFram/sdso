@@ -1,5 +1,29 @@
 # TODO: make as maps
 
+# SDSO settings
+playbackSpeed: 0
+preload: 0
+
+# TODO: do we need useSampleOutput here?
+mode: 1
+quiet: 0
+nogui: 0
+calib: /home/wfram/stereo_dso_ws/src/stereo-dso/config/camera_zed2_radtan.txt
+left_image_topic: /zed2/zed_node/left/image_rect_color
+right_image_topic: /zed2/zed_node/right/image_rect_color
+
+setting_desiredImmatureDensity: 1500
+setting_desiredPointDensity: 2000
+setting_minFrames: 5
+setting_maxFrames: 7
+setting_maxOptIterations: 6
+setting_minOptIterations: 1
+setting_kfGlobalWeight: 0.3
+setting_maxShiftWeightT: 40
+setting_maxShiftWeightR: 40
+setting_maxShiftWeightRT: 20
+setting_logStuff: false
+
 # RadiusOutlierRemoval settings
 useFiltering: false
 activeMinNeighborsInRadius: 4 # 8

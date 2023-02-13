@@ -19,8 +19,8 @@ SDSO::SDSO()
 
   undistorter.reset(Undistort::getUndistorterForFile(calib, gammaFile, vignetteFile));
 
-  // TODO: use static casting
-  setGlobalCalib((int)undistorter->getSize()[0], (int)undistorter->getSize()[1], undistorter->getK().cast<float>());
+  setGlobalCalib(static_cast<int>(undistorter->getSize()[0]), static_cast<int>(undistorter->getSize()[1]),
+                 undistorter->getK().cast<float>());
   baseline = undistorter->getBl();
 
   if (!disableAllDisplay)
@@ -154,7 +154,6 @@ void SDSO::callback(const sensor_msgs::ImageConstPtr &img_left, const sensor_msg
   ImageAndExposure *undistImg_left = undistorter->undistort<unsigned char>(&minImg, 1, stamp, 1.0f);
   ImageAndExposure *undistImg_right = undistorter->undistort<unsigned char>(&minImg_right, 1, stamp, 1.0f);
 
-  // TODO: here we should add images
   fullSystem->addActiveFrame(undistImg_left, undistImg_right, frameID);
   frameID++;
   delete undistImg_left;
@@ -185,10 +184,10 @@ int main(int argc, char **argv) {
 
   message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/cam0/image_raw", 1);
   message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/cam1/image_raw", 1);
-  // TODO: change to alias
-  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> sync_pol;
+  using sync_pol = message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image>;
   message_filters::Synchronizer<sync_pol> sync(sync_pol(10), left_sub, right_sub);
-  // TODO: check if there will not be an issue with memory management after we finished
+  // TODO: check if there will not be an issue with memory management after we finished (seems like it will not be,
+  //        since we
   sync.registerCallback(boost::bind(&SDSO::callback, std::move(sdso_system), _1, _2));
 
   ros::spin();

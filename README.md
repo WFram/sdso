@@ -15,6 +15,8 @@ Also, PCL library is required for use of ROS interface.
 mkdir ~/stereo_dso_ws/src
 cd ~/stereo_dso_ws/src
 git clone git@github.com:WFram/sdso.git
+# In case of using ARM
+# git submodule update --init
 cd ~/stereo_dso_ws
 catkin build sdso
 source ~/stereo_dso_ws/devel/setup.bash

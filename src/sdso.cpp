@@ -35,7 +35,8 @@ SDSO::SDSO()
 
   if (useSampleOutput) fullSystem->outputWrapper.push_back(new IOWrap::SampleOutputWrapper());
 
-  //  fullSystem->outputWrapper.push_back(rosOutput);
+  rosOutput = new ROSOutputWrapper();
+  fullSystem->outputWrapper.push_back(rosOutput);
 }
 
 void SDSO::parseSettings() {
@@ -141,7 +142,7 @@ void SDSO::callback(const sensor_msgs::ImageConstPtr &img_left, const sensor_msg
     ros::shutdown();
   }
 
-  //  rosOutput->publishOutput();
+  rosOutput->publishOutput();
 
   MinimalImageB minImg((int)cv_ptr->image.cols, (int)cv_ptr->image.rows, (unsigned char *)cv_ptr->image.data);
   MinimalImageB minImg_right((int)cv_ptr_right->image.cols, (int)cv_ptr_right->image.rows,
@@ -176,17 +177,18 @@ int main(int argc, char **argv) {
 
   setlocale(LC_ALL, "C");
 
-  SDSO sdso_system;
+  auto sdso_system = std::make_shared<SDSO>();
 
   message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/cam0/image_raw", 1);
   message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/cam1/image_raw", 1);
   // TODO: change to alias
   typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> sync_pol;
   message_filters::Synchronizer<sync_pol> sync(sync_pol(10), left_sub, right_sub);
-  sync.registerCallback(boost::bind(&SDSO::callback, &sdso_system, _1, _2));
+  // TODO: check if there will not be an issue with memory management after we finished
+  sync.registerCallback(boost::bind(&SDSO::callback, std::move(sdso_system), _1, _2));
 
   ros::spin();
-  sdso_system.stop();
+  sdso_system->stop();
 
   return 0;
 }

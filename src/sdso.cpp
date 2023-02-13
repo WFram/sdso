@@ -69,17 +69,20 @@ void SDSO::parseSettings() {
   switch (mode) {
     case 0:
       ROS_INFO("PHOTOMETRIC MODE WITH CALIBRATION!\n");
+      break;
     case 1:
       ROS_INFO("PHOTOMETRIC MODE WITHOUT CALIBRATION!\n");
       setting_photometricCalibration = 0;
       setting_affineOptModeA = 0;  //-1: fix. >=0: optimize (with prior, if > 0).
       setting_affineOptModeB = 0;  //-1: fix. >=0: optimize (with prior, if > 0).
+      break;
     case 2:
       printf("PHOTOMETRIC MODE WITH PERFECT IMAGES!\n");
       setting_photometricCalibration = 0;
       setting_affineOptModeA = -1;  //-1: fix. >=0: optimize (with prior, if > 0).
       setting_affineOptModeB = -1;  //-1: fix. >=0: optimize (with prior, if > 0).
       setting_minGradHistAdd = 3;
+      break;
   }
 
   if (sampleoutput == 1) {

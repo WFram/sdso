@@ -21,7 +21,7 @@ if(NOT EXISTS ${contrib_LIBS})
     file(MAKE_DIRECTORY ${contrib_INCLUDE_DIR})
 endif()
 
-add_library(opencv_contrib IMPORTED GLOBAL)
+add_library(opencv_contrib INTERFACE IMPORTED GLOBAL)
 add_dependencies(opencv_contrib opencv_contrib_external)
 
 set(URL https://github.com/opencv/opencv.git)
@@ -107,10 +107,10 @@ if(NOT EXISTS ${opencv_LIBS})
             EXCLUDE_FROM_ALL 1)
 endif()
 
-add_library(opencv IMPORTED GLOBAL)
+add_library(opencv INTERFACE IMPORTED GLOBAL)
 add_dependencies(opencv opencv_external)
 file(MAKE_DIRECTORY ${opencv_INCLUDE_DIR})
-target_include_directories(opencv ${opencv_INCLUDE_DIR})
+target_include_directories(opencv INTERFACE ${opencv_INCLUDE_DIR})
 
 set(OPENCV_LIBS)
 
@@ -130,4 +130,4 @@ foreach(
             ${opencv_LIBS}/lib${library}${CMAKE_SHARED_LIBRARY_SUFFIX})
 endforeach()
 
-target_link_libraries(opencv ${OPENCV_LIBS})
+target_link_libraries(opencv INTERFACE ${OPENCV_LIBS})

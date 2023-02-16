@@ -136,8 +136,7 @@ if (BUILD_WITH_ROS)
             ${catkin_INCLUDE_DIRS}
     )
     add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
-    add_library(sdso_ros_setup OBJECT src/empty.cpp)
-    target_link_libraries(sdso_ros_setup)
+    add_library(sdso_ros_setup src/empty.cpp)
     target_link_libraries(sdso_ros_setup
             ${BOOST_THREAD_LIBRARY}
             ${PCL_LIBRARIES}

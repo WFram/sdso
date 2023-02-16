@@ -5,8 +5,6 @@ cmake_minimum_required(VERSION 3.16)
 
 set(BUILD_TYPE RelWithDebInfo)
 
-set(CMAKE_GENERATOR "Ninja")
-
 include(dependencies.cmake)
 include(cmake/options.cmake)
 

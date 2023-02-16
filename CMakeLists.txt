@@ -136,11 +136,16 @@ if (BUILD_WITH_ROS)
             ${catkin_INCLUDE_DIRS}
     )
     add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
-    target_link_libraries(sdso_ros
-            sdso
-            ${Pangolin_LIBRARIES}
+    add_library(sdso_ros_setup OBJECT src/empty.cpp)
+    target_link_libraries(sdso_ros_setup)
+    target_link_libraries(sdso_ros_setup
             ${BOOST_THREAD_LIBRARY}
             ${PCL_LIBRARIES}
-            ${catkin_LIBRARIES})
+            ${catkin_LIBRARIES}
+            )
+    link_directories(${CATKIN_DEVEL_PREFIX}/lib NO_DEFAULT_PATH)
+    target_link_libraries(sdso_ros
+            sdso
+            sdso_ros_setup
+            ${Pangolin_LIBRARIES})
 endif ()
-

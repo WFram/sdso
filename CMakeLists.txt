@@ -99,7 +99,7 @@ if (Pangolin_FOUND)
     target_link_libraries(sdso_dataset sdso boost_system boost_thread cxsparse ${LIBZIP_LIBRARY} ${Pangolin_LIBRARIES})
 else ()
     message("--- not building sdso_dataset, since either don't have openCV or Pangolin.")
-    target_link_libraries(sdso opencv)
+    target_link_libraries(sdso PUBLIC opencv)
 endif ()
 
 # NOTE: if there is a need to build with ROS, use catkin build only

@@ -26,6 +26,10 @@
 #include "EnergyFunctional.h"
 #include "EnergyFunctionalStructs.h"
 
+#if !defined(__SSE3__) && !defined(__SSE2__) && !defined(__SSE1__)
+#include "SSE2NEON.h"
+#endif
+
 namespace dso {
 
 template <int mode>

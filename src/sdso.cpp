@@ -114,6 +114,8 @@ void SDSO::parseSettings() {
     printf("NO MultiThreading!\n");
   }
 
+  calib = CONFIG_DIR + calib;
+
   printf("loading calibration from %s!\n", calib.c_str());
   printf("loading vignette from %s!\n", vignetteFile.c_str());
   printf("loading gammaCalib from %s!\n", gammaFile.c_str());

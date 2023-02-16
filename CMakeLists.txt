@@ -136,6 +136,8 @@ if (BUILD_WITH_ROS)
             ${PCL_INCLUDE_DIRS}
             ${catkin_INCLUDE_DIRS}
     )
+    add_compile_definitions(CONFIG_DIR="${PROJECT_SOURCE_DIR}/config/")
+    set(CONFIG_DIR "${PROJECT_SOURCE_DIR}/config/")
     add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
     add_library(sdso_ros_setup src/empty.cpp)
     target_link_libraries(sdso_ros_setup

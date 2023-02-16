@@ -9,7 +9,7 @@ mode: 1
 quiet: 0
 nogui: 0
 # TODO: change the path to local
-calib: /home/wfram/stereo_dso_ws/src/stereo-dso/config/camera_zed2_radtan.txt
+calib: "camera_zed2_radtan.txt" # needs to be a file name
 left_image_topic: /zed2/zed_node/left/image_rect_color
 right_image_topic: /zed2/zed_node/right/image_rect_color
 

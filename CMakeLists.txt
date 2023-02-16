@@ -131,7 +131,7 @@ if (BUILD_WITH_ROS)
     )
     include_directories(
             ${PROJECT_SOURCE_DIR}/src/ROSWrapper
-            ${PROJECT_SOURCE_DIR}/src/sdso.h
+            ${PROJECT_SOURCE_DIR}/src/
             ${PCL_INCLUDE_DIRS}
             ${catkin_INCLUDE_DIRS}
     )

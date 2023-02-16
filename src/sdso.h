@@ -10,7 +10,9 @@
 
 #include "FullSystem.h"
 #include "OutputWrapper/SampleOutputWrapper.h"
+#ifdef BUILD_WITH_PANGOLIN
 #include "Pangolin/PangolinDSOViewer.h"
+#endif
 #include "Undistort.h"
 #include "settings.h"
 
@@ -47,7 +49,9 @@ class SDSO {
  private:
   std::unique_ptr<FullSystem> fullSystem;
   std::unique_ptr<Undistort> undistorter;
+#ifdef BUILD_WITH_PANGOLIN
   IOWrap::PangolinDSOViewer *viewer;
+#endif
   dso::ROSOutputWrapper *rosOutput;
 
   int frameID;

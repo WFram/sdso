@@ -23,15 +23,19 @@ SDSO::SDSO()
                  undistorter->getK().cast<float>());
   baseline = undistorter->getBl();
 
+#ifdef BUILD_WITH_PANGOLIN
   if (!disableAllDisplay)
     viewer = new IOWrap::PangolinDSOViewer((int)undistorter->getSize()[0], (int)undistorter->getSize()[1]);
+#endif
 
   fullSystem = std::make_unique<FullSystem>();
   fullSystem->linearizeOperation = false;
 
   if (undistorter->photometricUndist != nullptr) fullSystem->setGammaFunction(undistorter->photometricUndist->getG());
 
+#ifdef BUILD_WITH_PANGOLIN
   if (viewer) fullSystem->outputWrapper.push_back(viewer);
+#endif
 
   if (useSampleOutput) fullSystem->outputWrapper.push_back(new IOWrap::SampleOutputWrapper());
 

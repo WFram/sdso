@@ -6,7 +6,7 @@ set(contrib_INCLUDE_DIR
 set(contrib_LIBS
         ${CMAKE_CURRENT_BINARY_DIR}/3rd_party/src/opencv_contrib_external/modules)
 
-if(NOT EXISTS ${contrib_LIBS})
+if (NOT EXISTS ${contrib_LIBS})
     ExternalProject_Add(
             opencv_contrib_external
             GIT_REPOSITORY ${CONTRIB_URL}
@@ -19,7 +19,7 @@ if(NOT EXISTS ${contrib_LIBS})
             PREFIX 3rd_party
             EXCLUDE_FROM_ALL 1)
     file(MAKE_DIRECTORY ${contrib_INCLUDE_DIR})
-endif()
+endif ()
 
 add_library(opencv_contrib INTERFACE IMPORTED GLOBAL)
 add_dependencies(opencv_contrib opencv_contrib_external)
@@ -34,7 +34,7 @@ set(opencv_LIBS
         ${CMAKE_CURRENT_BINARY_DIR}/3rd_party/src/opencv_external-build/install/lib)
 set(OpenCV_DIR ${CMAKE_CURRENT_BINARY_DIR}/3rd_party/src/opencv_external-build)
 
-if(NOT EXISTS ${opencv_LIBS})
+if (NOT EXISTS ${opencv_LIBS})
     ExternalProject_Add(
             opencv_external
             DEPENDS opencv_contrib
@@ -105,7 +105,7 @@ if(NOT EXISTS ${opencv_LIBS})
             TEST_COMMAND ""
             PREFIX 3rd_party
             EXCLUDE_FROM_ALL 1)
-endif()
+endif ()
 
 add_library(opencv INTERFACE IMPORTED GLOBAL)
 add_dependencies(opencv opencv_external)
@@ -114,7 +114,7 @@ target_include_directories(opencv INTERFACE ${opencv_INCLUDE_DIR})
 
 set(OPENCV_LIBS)
 
-foreach(
+foreach (
         library
         opencv_core
         opencv_flann
@@ -128,6 +128,6 @@ foreach(
         opencv_xfeatures2d)
     list(APPEND OPENCV_LIBS
             ${opencv_LIBS}/lib${library}${CMAKE_SHARED_LIBRARY_SUFFIX})
-endforeach()
+endforeach ()
 
 target_link_libraries(opencv INTERFACE ${OPENCV_LIBS})

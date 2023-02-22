@@ -71,7 +71,7 @@ class ROSOutputWrapper : public dso::IOWrap::Output3DWrapper {
 
   // ref cloud
   bool useReferenceCloud;
-  std::string referenceCloudPath;
+  std::string referenceCloudFile;
   PointCloudXYZ loc_reference_cloud;
 
   bool useFiltering;

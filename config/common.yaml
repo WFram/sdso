@@ -37,7 +37,7 @@ marginRadiusSearch: 0.2
 publishMarginCloud: false
 accumulateGlobalCloud: false
 useReferenceCloud: true
-referenceCloudPath: "/home/wfram/.ros/dmvio_global_cloud.pcd"
+referenceCloudFile: "sample_reference_cloud.pcd"
 
 # --- NOT USED ---
 

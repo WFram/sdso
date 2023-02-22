@@ -54,10 +54,11 @@ dso::ROSOutputWrapper::ROSOutputWrapper()
 
   ros::param::get("useReferenceCloud", useReferenceCloud);
   std::cout << "useReferenceCloud: " << useReferenceCloud << std::endl;
-  ros::param::get("referenceCloudPath", referenceCloudPath);
-  std::cout << "referenceCloudPath: " << referenceCloudPath << std::endl;
+  ros::param::get("referenceCloudFile", referenceCloudFile);
+  std::cout << "referenceCloudFile: " << referenceCloudFile << std::endl;
 
-  pcl::io::loadPCDFile(referenceCloudPath, loc_reference_cloud);
+  // TODO: test it
+  pcl::io::loadPCDFile(CONFIG_DIR + referenceCloudFile, loc_reference_cloud);
   if (useReferenceCloud) publish_reference_cloud();
 
   poseBuf.clear();

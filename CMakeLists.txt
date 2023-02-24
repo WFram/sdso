@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 3.16)
 
 set(BUILD_TYPE RelWithDebInfo)
 
-include(dependencies.cmake)
 include(cmake/options.cmake)
 
 set(EXECUTABLE_OUTPUT_PATH bin)
@@ -15,6 +14,14 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(SuiteParse REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system thread)
+
+find_package(OpenCVLocal REQUIRED)
+
+if (opencv_FOUND)
+    message("Found local OpenCV")
+else ()
+    message(FATAL_ERROR "Local OpenCV NOT found")
+endif ()
 
 find_package(LibZip QUIET)
 find_package(Pangolin 0.2 QUIET)
@@ -56,9 +63,9 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/util
         ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
         ${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
+        ${opencv_INCLUDE_DIR}/../ # /path/to/opencv4
         ${EIGEN3_INCLUDE_DIR}
 )
-
 
 # decide if we have pangolin
 if (Pangolin_FOUND)
@@ -85,21 +92,19 @@ else ()
     set(LIBZIP_LIBRARY "")
 endif ()
 
-
 # compile main library.
 include_directories(${CSPARSE_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR})
 add_library(sdso ${sdso_SOURCE_FILES} ${sdso_pangolin_SOURCE_FILES})
 
+target_link_libraries(sdso PUBLIC ${OPENCV_LIBS})
 
 # build main executable (only if we have both OpenCV and Pangolin)
 if (Pangolin_FOUND)
     message("--- compiling sdso_dataset.")
     add_executable(sdso_dataset ${PROJECT_SOURCE_DIR}/src/main_dso_pangolin.cpp)
-    target_link_libraries(sdso PUBLIC opencv)
     target_link_libraries(sdso_dataset sdso boost_system boost_thread cxsparse ${LIBZIP_LIBRARY} ${Pangolin_LIBRARIES})
 else ()
     message("--- not building sdso_dataset, since either don't have openCV or Pangolin.")
-    target_link_libraries(sdso PUBLIC opencv)
 endif ()
 
 # NOTE: if there is a need to build with ROS, use catkin build only

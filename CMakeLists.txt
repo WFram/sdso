@@ -1,13 +1,10 @@
 SET(PROJECT_NAME sdso C CXX)
 
 PROJECT(${PROJECT_NAME})
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 
 set(BUILD_TYPE RelWithDebInfo)
 
-set(CMAKE_GENERATOR "Ninja")
-
-include(dependencies.cmake)
 include(cmake/options.cmake)
 
 set(EXECUTABLE_OUTPUT_PATH bin)
@@ -17,6 +14,14 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(SuiteParse REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system thread)
+
+find_package(OpenCV REQUIRED)
+
+if (opencv_FOUND)
+    message("Found local OpenCV")
+else ()
+    message(FATAL_ERROR "Local OpenCV NOT found")
+endif ()
 
 find_package(LibZip QUIET)
 find_package(Pangolin 0.2 QUIET)
@@ -57,9 +62,10 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/OptimizationBackend
         ${PROJECT_SOURCE_DIR}/src/util
         ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
+        ${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
+        ${opencv_INCLUDE_DIR}/../ # /path/to/opencv4
         ${EIGEN3_INCLUDE_DIR}
 )
-
 
 # decide if we have pangolin
 if (Pangolin_FOUND)
@@ -86,17 +92,16 @@ else ()
     set(LIBZIP_LIBRARY "")
 endif ()
 
-
 # compile main library.
 include_directories(${CSPARSE_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR})
 add_library(sdso ${sdso_SOURCE_FILES} ${sdso_pangolin_SOURCE_FILES})
 
+target_link_libraries(sdso PUBLIC ${OPENCV_LIBS})
 
 # build main executable (only if we have both OpenCV and Pangolin)
 if (Pangolin_FOUND)
     message("--- compiling sdso_dataset.")
     add_executable(sdso_dataset ${PROJECT_SOURCE_DIR}/src/main_dso_pangolin.cpp)
-    target_link_libraries(sdso opencv)
     target_link_libraries(sdso_dataset sdso boost_system boost_thread cxsparse ${LIBZIP_LIBRARY} ${Pangolin_LIBRARIES})
 else ()
     message("--- not building sdso_dataset, since either don't have openCV or Pangolin.")
@@ -112,7 +117,6 @@ if (BUILD_WITH_ROS)
             tf2
             tf2_ros
             pcl_conversions
-            cv_bridge
             message_filters
             )
     find_package(PCL 1.8 REQUIRED)
@@ -126,20 +130,33 @@ if (BUILD_WITH_ROS)
             pcl_conversions
             roscpp
             sensor_msgs
-            cv_bridge
             message_filters
     )
+    # TODO: set using predefined var
+    set(cv_bridge_INCLUDE_DIRS "${CATKIN_DEVEL_PREFIX}/../src/cv_bridge_local/include")
     include_directories(
             ${PROJECT_SOURCE_DIR}/src/ROSWrapper
+            ${PROJECT_SOURCE_DIR}/src/
             ${PCL_INCLUDE_DIRS}
+            ${cv_bridge_INCLUDE_DIRS}
             ${catkin_INCLUDE_DIRS}
     )
-    add_executable(sdso_ros src/stereo_dso_ros.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
-    target_link_libraries(sdso_ros
-            sdso
-            ${Pangolin_LIBRARIES}
+    message("cv_bridge_INCLUDE_DIRS: ${cv_bridge_INCLUDE_DIRS}")
+    add_compile_definitions(CONFIG_DIR="${PROJECT_SOURCE_DIR}/config/")
+    set(CONFIG_DIR "${PROJECT_SOURCE_DIR}/config/")
+    add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
+    add_library(sdso_ros_setup src/empty.cpp)
+    set(cv_bridge_LIBRARIES ${CATKIN_DEVEL_PREFIX}/lib/libcv_bridge.so)
+    target_link_libraries(sdso_ros_setup
             ${BOOST_THREAD_LIBRARY}
             ${PCL_LIBRARIES}
-            ${catkin_LIBRARIES})
+            ${cv_bridge_LIBRARIES}
+            ${catkin_LIBRARIES}
+            )
+    message("cv_bridge_LIBRARIES: ${cv_bridge_LIBRARIES}")
+    link_directories(${CATKIN_DEVEL_PREFIX}/lib NO_DEFAULT_PATH)
+    target_link_libraries(sdso_ros
+            sdso
+            sdso_ros_setup
+            ${Pangolin_LIBRARIES})
 endif ()
-

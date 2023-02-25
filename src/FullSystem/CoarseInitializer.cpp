@@ -37,6 +37,10 @@
 #include "Residuals.h"
 #include "nanoflann.h"
 
+#if !defined(__SSE3__) && !defined(__SSE2__) && !defined(__SSE1__)
+#include "SSE2NEON.h"
+#endif
+
 namespace dso {
 
 CoarseInitializer::CoarseInitializer(int ww, int hh) : thisToNext_aff(0, 0), thisToNext(SE3()) {

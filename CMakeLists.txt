@@ -117,7 +117,6 @@ if (BUILD_WITH_ROS)
             tf2
             tf2_ros
             pcl_conversions
-            cv_bridge
             message_filters
             )
     find_package(PCL 1.8 REQUIRED)
@@ -131,24 +130,30 @@ if (BUILD_WITH_ROS)
             pcl_conversions
             roscpp
             sensor_msgs
-            cv_bridge
             message_filters
     )
+    # TODO: set using predefined var
+    set(cv_bridge_INCLUDE_DIRS "${CATKIN_DEVEL_PREFIX}/../src/cv_bridge_local/include")
     include_directories(
             ${PROJECT_SOURCE_DIR}/src/ROSWrapper
             ${PROJECT_SOURCE_DIR}/src/
             ${PCL_INCLUDE_DIRS}
+            ${cv_bridge_INCLUDE_DIRS}
             ${catkin_INCLUDE_DIRS}
     )
+    message("cv_bridge_INCLUDE_DIRS: ${cv_bridge_INCLUDE_DIRS}")
     add_compile_definitions(CONFIG_DIR="${PROJECT_SOURCE_DIR}/config/")
     set(CONFIG_DIR "${PROJECT_SOURCE_DIR}/config/")
     add_executable(sdso_ros src/sdso.cpp src/ROSWrapper/ROSOutputWrapper.cpp)
     add_library(sdso_ros_setup src/empty.cpp)
+    set(cv_bridge_LIBRARIES ${CATKIN_DEVEL_PREFIX}/lib/libcv_bridge.so)
     target_link_libraries(sdso_ros_setup
             ${BOOST_THREAD_LIBRARY}
             ${PCL_LIBRARIES}
+            ${cv_bridge_LIBRARIES}
             ${catkin_LIBRARIES}
             )
+    message("cv_bridge_LIBRARIES: ${cv_bridge_LIBRARIES}")
     link_directories(${CATKIN_DEVEL_PREFIX}/lib NO_DEFAULT_PATH)
     target_link_libraries(sdso_ros
             sdso

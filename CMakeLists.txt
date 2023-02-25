@@ -15,7 +15,7 @@ find_package(SuiteParse REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system thread)
 
-find_package(OpenCVLocal REQUIRED)
+find_package(OpenCV REQUIRED)
 
 if (opencv_FOUND)
     message("Found local OpenCV")

@@ -57,8 +57,8 @@ bool setting_forceAceptStep = true;
 float setting_minIdepthH_act = 100;
 float setting_minIdepthH_marg = 50;
 
-float setting_desiredImmatureDensity = 3000;  // original is 1500 immature points per frame
-float setting_desiredPointDensity = 4000;     // original is 2000 aimed total points in the active window.
+float setting_desiredImmatureDensity = 1500;  // original is 1500 immature points per frame
+float setting_desiredPointDensity = 2000;     // original is 2000 aimed total points in the active window.
 float setting_minPointsRemaining = 0.05;      // marg a frame if less than X% points remain.
 float setting_maxLogAffFacInWindow =
     0.7;  // marg a frame if factor between intensities to current frame is larger than 1/X or X.
@@ -107,7 +107,7 @@ float setting_coarseCutoffTH = 20;
 
 // parameters controlling pixel selection
 float setting_minGradHistCut = 0.5;
-float setting_minGradHistAdd = 15;
+float setting_minGradHistAdd = 7;
 float setting_gradDownweightPerLevel = 0.75;
 bool setting_selectDirectionDistribution = true;
 

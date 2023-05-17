@@ -638,10 +638,7 @@ void Undistort::readFromFile(const char* configFileName, int nPars, std::string 
     }
   } else if (nPars == 8)  // KB, equi & radtan model
   {
-    char buf[1000];
-    snprintf(buf, 1000, "%s%%lf %%lf %%lf %%lf %%lf %%lf %%lf %%lf %%lf %%lf", prefix.c_str());
-
-    if (std::sscanf(l1.c_str(), buf, &parsOrg[0], &parsOrg[1], &parsOrg[2], &parsOrg[3], &parsOrg[4], &parsOrg[5],
+    if (std::sscanf(l1.c_str(), "%*s %lf %lf %lf %lf %lf %lf %lf %lf", &parsOrg[0], &parsOrg[1], &parsOrg[2], &parsOrg[3], &parsOrg[4], &parsOrg[5],
                     &parsOrg[6], &parsOrg[7]) == 8 &&
         std::sscanf(l2.c_str(), "%d %d", &wOrg, &hOrg) == 2) {
       printf("Input resolution: %d %d\n", wOrg, hOrg);

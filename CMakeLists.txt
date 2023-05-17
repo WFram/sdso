@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(SuiteParse REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system thread)
-
+find_package(OpenCV REQUIRED)
 find_package(LibZip QUIET)
 find_package(Pangolin 0.2 QUIET)
 
@@ -56,9 +56,11 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/util
         ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
         ${PROJECT_SOURCE_DIR}/thirdparty/sse2neon
-        ${opencv_INCLUDE_DIR}/ # /path/to/opencv4
+        ${OpenCV_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
 )
+
+message("CV: ${OpenCV_INCLUDE_DIRS}")
 
 # decide if we have pangolin
 if (Pangolin_FOUND)
@@ -89,7 +91,7 @@ endif ()
 include_directories(${CSPARSE_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR})
 add_library(sdso ${sdso_SOURCE_FILES} ${sdso_pangolin_SOURCE_FILES})
 
-target_link_libraries(sdso PUBLIC ${OPENCV_LIBS})
+target_link_libraries(sdso PUBLIC ${OpenCV_LIBS})
 
 # build main executable (only if we have both OpenCV and Pangolin)
 if (Pangolin_FOUND)

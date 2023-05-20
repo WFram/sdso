@@ -1425,11 +1425,11 @@ void FullSystem::initializeFromInitializer(FrameHessian* newFrame) {
   // really no lock required, as we are initializing.
   {
     boost::unique_lock<boost::mutex> crlock(shellPoseMutex);
-    firstFrame->shell->camToWorld = SE3();
+    firstFrame->shell->camToWorld = initialPose;
     firstFrame->shell->aff_g2l = AffLight(0, 0);
     firstFrame->setEvalPT_scaled(firstFrame->shell->camToWorld.inverse(), firstFrame->shell->aff_g2l);
     firstFrame->shell->trackingRef = 0;
-    firstFrame->shell->camToTrackingRef = SE3();
+    firstFrame->shell->camToTrackingRef = initialPose;
 
     newFrame->shell->camToWorld = firstToNew.inverse();
     newFrame->shell->aff_g2l = AffLight(0, 0);

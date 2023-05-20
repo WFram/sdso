@@ -39,9 +39,9 @@
 #include "settings.h"
 
 #include "FullSystem.h"
-#include "PixelSelector2.h"
 #include "MatrixAccumulators.h"
 #include "NumType.h"
+#include "PixelSelector2.h"
 
 #include "OutputWrapper/SampleOutputWrapper.h"
 #include "Pangolin/PangolinDSOViewer.h"
@@ -54,6 +54,7 @@ std::string gammaCalib = "";
 std::string source = "";
 std::string calib = "";
 std::string result = "";
+std::string initialpose = "";
 double rescale = 1;
 bool reverse = false;
 bool disableROS = false;
@@ -247,6 +248,12 @@ void parseArgument(char* arg) {
     return;
   }
 
+  if (1 == sscanf(arg, "initialpose=%s", buf)) {
+    initialpose = buf;
+    printf("taking initial pose from %s!\n", initialpose.c_str());
+    return;
+  }
+
   if (1 == sscanf(arg, "calib=%s", buf)) {
     calib = buf;
     printf("loading calibration from %s!\n", calib.c_str());
@@ -342,6 +349,7 @@ int main(int argc, char** argv) {
   FullSystem* fullSystem = new FullSystem();
   fullSystem->setGammaFunction(reader->getPhotometricGamma());
   fullSystem->linearizeOperation = (playbackSpeed == 0);
+  fullSystem->setInitialPose(initialpose);
 
   IOWrap::PangolinDSOViewer* viewer = 0;
   if (!disableAllDisplay) {

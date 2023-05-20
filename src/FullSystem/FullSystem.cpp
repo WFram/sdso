@@ -34,14 +34,14 @@
 #include <Eigen/LU>
 #include <Eigen/SVD>
 #include <algorithm>
+#include "ImageDisplay.h"
 #include "ImmaturePoint.h"
 #include "PixelSelector.h"
 #include "PixelSelector2.h"
 #include "ResidualProjections.h"
-#include "ImageDisplay.h"
-#include "stdio.h"
 #include "globalCalib.h"
 #include "globalFuncs.h"
+#include "stdio.h"
 
 #include "CoarseInitializer.h"
 #include "CoarseTracker.h"
@@ -239,12 +239,9 @@ void FullSystem::printResult(std::string file) {
 
     if (s->marginalizedAt == s->id) continue;
 
-    myfile << s->timestamp / 1e4 <<
-    	" " << s->camToWorld.translation().transpose()<<
-    	" " << s->camToWorld.so3().unit_quaternion().x()<<
-    	" " << s->camToWorld.so3().unit_quaternion().y()<<
-    	" " << s->camToWorld.so3().unit_quaternion().z()<<
-    	" " << s->camToWorld.so3().unit_quaternion().w() << "\n";
+    myfile << s->timestamp / 1e4 << " " << s->camToWorld.translation().transpose() << " "
+           << s->camToWorld.so3().unit_quaternion().x() << " " << s->camToWorld.so3().unit_quaternion().y() << " "
+           << s->camToWorld.so3().unit_quaternion().z() << " " << s->camToWorld.so3().unit_quaternion().w() << "\n";
   }
   myfile.close();
 }
@@ -875,14 +872,14 @@ void FullSystem::activatePointsMT() {
         }
       } else {
         delete ph;
-        host->immaturePoints[i] = 0;  //删除点的操作
+        host->immaturePoints[i] = 0;  // 删除点的操作
       }
     }
   }
 
   //	printf("ACTIVATE: %d. (del %d, notReady %d, marg %d, good %d, marg-skip %d)\n",
   //			(int)toOptimize.size(), immature_deleted, immature_notReady, immature_needMarg, immature_want,
-  //immature_margskip);
+  // immature_margskip);
 
   std::vector<PointHessian*> optimized;
   optimized.resize(toOptimize.size());
@@ -1174,6 +1171,32 @@ void FullSystem::mappingLoop() {
     mappedFrameSignal.notify_all();
   }
   printf("MAPPING FINISHED!\n");
+}
+
+void FullSystem::setInitialPose(const std::string& filename) {
+  std::ifstream file(filename.c_str());
+  if (!file.good()) {
+    file.close();
+    printf(" ... not found. Cannot operate without initial pose, shutting down.\n");
+    file.close();
+    return;
+  }
+
+  printf(" ... found!\n");
+  std::string line;
+  std::getline(file, line);
+  file.close();
+
+  if (std::sscanf(line.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &initialRotation(0, 0),
+                  &initialRotation(0, 1), &initialRotation(0, 2), &initialTranslation(0, 0), &initialRotation(1, 0),
+                  &initialRotation(1, 1), &initialRotation(1, 2), &initialTranslation(1, 0), &initialRotation(2, 0),
+                  &initialRotation(2, 1), &initialRotation(2, 2), &initialTranslation(2, 0)) == 12) {
+    printf("Got initial pose\n");
+    std::cout << initialRotation << "\n";
+    std::cout << initialTranslation.transpose() << "\n";
+  }
+
+  initialPose = Sophus::SE3d(initialRotation, initialTranslation);
 }
 
 void FullSystem::blockUntilMappingIsFinished() {

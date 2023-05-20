@@ -146,6 +146,7 @@ class FullSystem {
 
   void setGammaFunction(float* BInv);
   void setOriginalCalib(VecXf originalCalib, int originalW, int originalH);
+  void setInitialPose(const std::string& file);
 
  private:
   CalibHessian Hcalib;
@@ -248,6 +249,10 @@ class FullSystem {
   std::vector<FrameHessian*> frameHessiansRight;
 
   std::vector<float> allResVec;
+  
+  Eigen::Matrix3d initialRotation;
+  Eigen::Vector3d initialTranslation;
+  Sophus::SE3d initialPose;
 
   // mutex etc. for tracker exchange.
   boost::mutex coarseTrackerSwapMutex;    // if tracker sees that there is a new reference, tracker locks

@@ -3,6 +3,8 @@ SEQ=$1
 ./build/bin/sdso_dataset \
     files=$SEQ \
     calib=$SEQ/stereo_camera.txt \
+    result=$SEQ \
+    initialpose=$SEQ/initial_pose.txt \
     mode=1 \
     nogui=0 \
     quiet=1 \

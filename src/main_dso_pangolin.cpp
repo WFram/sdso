@@ -53,6 +53,7 @@ std::string vignette = "";
 std::string gammaCalib = "";
 std::string source = "";
 std::string calib = "";
+std::string result = "";
 double rescale = 1;
 bool reverse = false;
 bool disableROS = false;
@@ -237,6 +238,12 @@ void parseArgument(char* arg) {
   if (1 == sscanf(arg, "files=%s", buf)) {
     source = buf;
     printf("loading data from %s!\n", source.c_str());
+    return;
+  }
+
+  if (1 == sscanf(arg, "result=%s", buf)) {
+    result = buf;
+    printf("generating results into %s!\n", result.c_str());
     return;
   }
 
@@ -483,7 +490,7 @@ int main(int argc, char** argv) {
     struct timeval tv_end;
     gettimeofday(&tv_end, NULL);
 
-    fullSystem->printResult("/home/jiatianwu/project/sdso/result.txt");
+    fullSystem->printResult(result + "/sdso_trajectory.txt");
 
     int numFramesProcessed = abs(idsToPlay[0] - idsToPlay.back());
     double numSecondsProcessed = fabs(reader->getTimestamp(idsToPlay[0]) - reader->getTimestamp(idsToPlay.back()));

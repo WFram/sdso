@@ -110,6 +110,8 @@ class PangolinDSOViewer : public Output3DWrapper {
   float settings_minRelBS;
   int settings_sparsity;
 
+  int frame_id = 0;
+
   // timings
   struct timeval last_track;
   struct timeval last_map;

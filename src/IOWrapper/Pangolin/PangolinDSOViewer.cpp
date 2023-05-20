@@ -147,6 +147,8 @@ void PangolinDSOViewer::run() {
   pangolin::Var<double> settings_trackFps("ui.Track fps", 0, 0, 0, false);
   pangolin::Var<double> settings_mapFps("ui.KF fps", 0, 0, 0, false);
 
+  pangolin::Var<double> settings_incoming_frame_id("ui.Frame ID", 1, 0, 0, false);
+
   // show ground truth
   std::string gtPath = "/home/jiatianwu/dso/05/05.txt";
   std::ifstream ReadFile(gtPath.c_str());
@@ -287,6 +289,8 @@ void PangolinDSOViewer::run() {
     setting_maxFrames = settings_nMaxFrames.Get();
     setting_kfGlobalWeight = settings_kfFrequency.Get();
     setting_minGradHistAdd = settings_gradHistAdd.Get();
+
+    settings_incoming_frame_id = this->frame_id;
 
     if (settings_resetButton.Get()) {
       printf("RESET!\n");
@@ -471,6 +475,8 @@ void PangolinDSOViewer::publishCamPose(FrameShell* frame, CalibHessian* HCalib) 
   last_track = time_now;
 
   if (!setting_render_display3D) return;
+
+  this->frame_id = frame->incoming_id;
 
   currentCam->setFromF(frame, HCalib);
   allFramePoses.push_back(frame->camToWorld.translation().cast<float>());
